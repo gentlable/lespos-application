@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="fragment/common/head :: head ('My Page Title')">
+    <!-- This will be replaced by the header fragment -->
+  </head>
+
+  <body>
+    <object th:data="'data:image/png;base64,'+${base64Image}"></object>
+    <embed th:src="'data:image/png;base64,'+${base64Image}" />
+    <footer th:replace="fragment/common/footer :: footer-scripts"></footer>
+  </body>
+</html>

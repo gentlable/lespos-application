@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="fragment/common/head :: head ('My Page Title')">
+    <!-- This will be replaced by the header fragment -->
+  </head>
+  <body class="bg-light">
+    <header
+      th:replace="fragment/common/header :: header ('ユーザー新規登録デモ')"
+    ></header>
+    <!-- This will be replaced by the header fragment -->
+    <div class="container py-5">
+      <div class="row mb-4">
+        <div class="col">
+          <form th:action="@{/upload}" method="post">
+            <!-- 新規追加のためのボタン -->
+            <button type="submit" class="btn btn-primary">
+              ユーザー新規追加
+            </button>
+          </form>
+        </div>
+      </div>
+      <div class="row mb-4">
+        <div class="col">
+          <a href="/" class="btn d-inline-block">ホームへ</a>
+        </div>
+      </div>
+    </div>
+
+    <footer th:replace="fragment/common/footer :: footer-scripts"></footer>
+  </body>
+</html>

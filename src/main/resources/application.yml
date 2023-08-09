@@ -1,0 +1,37 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          test:
+            client-id: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_TEST_CLIENT_ID}
+            client-secret: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_TEST_CLIENT_SECRET}
+            client-name: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_TEST_CLIENT_NAME}
+            provider: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_TEST_PROVIDER}
+            scope: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_TEST_SCOPE}
+            redirect-uri: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_TEST_REDIRECT_URI}
+            authorization-grant-type: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_TEST_AUTHORIZATION_GRANT_TYPE}
+        provider:
+          cognito:
+            authorization-uri: ${SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_COGNITO_AUTHORIZATION_URI}
+            token-uri: ${SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_COGNITO_TOKEN_URI}
+            user-info-uri: ${SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_COGNITO_USER_INFO_URI}
+            user-name-attribute: ${SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_COGNITO_USER_NAME_ATTRIBUTE}
+            jwk-set-uri: ${SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_COGNITO_JWK_SET_URI}
+            name: ${SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_COGNITO_NAME}
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/mydatabase}
+    username: ${DB_USERNAME:myuser}
+    password: ${DB_PASSWORD:mypassword}
+    driver-class-name: ${DB_DRIVER_CLASS_NAME:com.mysql.cj.jdbc.Driver}
+aws:
+  credentials:
+    accessKey: ${AWS_CREDENTIALS_ACCESSKEY}
+    secretKey: ${AWS_CREDENTIALS_SECRETKEY}
+  cognito:
+    user-pool:
+      id: ${AWS_COGNITO_USER_POOL_ID}
+    identity-pool:
+      id: ${AWS_COGNITO_IDENTITY_POOL_ID}
+  s3:
+    bucket: ${AWS_S3_BUCKET}

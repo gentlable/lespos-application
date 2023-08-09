@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+  layout:decorate="~{layout/common/default}"
+>
+  <head>
+    <meta charset="UTF-8" th:remove="tag" />
+  </head>
+  <body>
+    <div layout:fragment="content">
+      <header
+        th:replace="fragment/common/header :: header ('法人管理')"
+      ></header>
+      <!-- This will be replaced by the header fragment -->
+      <div class="container py-5">
+        <table class="ui celled table table-0-1-294">
+          <thead class="root-0-1-165">
+            <tr class="">
+              <th class="collapsing">詳細</th>
+              <th class="">会社名</th>
+              <th class="one wide">郵便番号</th>
+              <th class="one wide">住所</th>
+              <th class="one wide">電話番号</th>
+              <th class="">ステータス</th>
+            </tr>
+          </thead>
+          <tbody class="">
+            <tr th:each="company : ${companies}">
+              <td class="collapsing">
+                <a th:href="@{/company/details/{id}(id=${company.id})}">詳細</a>
+              </td>
+              <td th:text="${company.name}">会社名</td>
+              <td class="one wide" th:text="${company.postalCode}">郵便番号</td>
+              <td class="one wide" th:text="${company.address}">住所</td>
+              <td class="one wide" th:text="${company.tel}">電話番号</td>
+              <td th:text="${company.status}">ステータス</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

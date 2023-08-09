@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="fragment/common/head :: head ('My Page Title')">
+    <!-- This will be replaced by the header fragment -->
+  </head>
+
+  <body class="bg-light">
+    <header
+      th:replace="fragment/common/header :: header ('ファイルアップロードデモ')"
+    ></header>
+    <div class="container py-5">
+      <div class="row mb-4">
+        <div class="col">
+          <form
+            id="category"
+            enctype="multipart/form-data"
+            th:action="@{/upload}"
+            method="post"
+          >
+            <div class="input-group mb-3" th:object="${fileUploadForm}">
+              <input
+                type="file"
+                th:field="*{multipartFile}"
+                class="form-control"
+                id="inputGroupFile01"
+              />
+              <label class="input-group-text" for="inputGroupFile01"
+                >Upload</label
+              >
+            </div>
+            <button class="btn btn-primary" type="submit">登録</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <footer th:replace="fragment/common/footer :: footer-scripts"></footer>
+  </body>
+</html>

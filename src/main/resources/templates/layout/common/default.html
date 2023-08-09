@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+  <head th:replace="fragment/common/head :: head ('lespos')"> </head>
+  <body>
+    <!-- コンテンツの配置 -->
+    <div layout:fragment="content"></div>
+
+    <footer th:replace="fragment/common/footer :: footer-scripts"></footer>
+  </body>
+</html>
