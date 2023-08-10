@@ -15,7 +15,6 @@ import jakarta.mail.Session;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import jp.co.fullhouse.lespos.lesposapplication.model.service.GmailSender;
-import jp.co.fullhouse.lespos.lesposapplication.model.service.MailService;
 import jp.co.fullhouse.lespos.lesposapplication.utils.GoogleApiUtils;
 
 /**
@@ -24,12 +23,10 @@ import jp.co.fullhouse.lespos.lesposapplication.utils.GoogleApiUtils;
 @Controller
 public class LesposController {
   private final GmailSender gmailSender;
-  private final MailService mailService;
 
   private String callbackUrl = "http://localhost:8080/callback";
 
-  public LesposController(MailService mailService, GmailSender gmailSender) {
-    this.mailService = mailService;
+  public LesposController(GmailSender gmailSender) {
     this.gmailSender = gmailSender;
   }
 
