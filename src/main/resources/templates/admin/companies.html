@@ -14,10 +14,176 @@
       ></header>
       <!-- This will be replaced by the header fragment -->
       <div class="container py-5">
-        <table class="ui celled table table-0-1-294">
-          <thead class="root-0-1-165">
+        <form
+          class="row g-3"
+          th:action="@{/admin/companies/search}"
+          method="get"
+          th:object="${companySearchForm}"
+        >
+          <div class="col-auto">
+            <label for="search-name" class="">会社名</label>
+            <input
+              type="text"
+              th:field="*{name}"
+              class="form-control"
+              id="search-name"
+              placeholder="会社名"
+            />
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">検索</button>
+          </div>
+        </form>
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-success"
+        id="add-modal-button"
+        data-bs-toggle="modal"
+        data-bs-target="#companyModal"
+      >
+        新規登録
+      </button>
+      <!-- Modal 新規会社登録 -->
+      <div
+        class="modal fade"
+        id="companyModal"
+        tabindex="-1"
+        aria-labelledby="companyModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="companyModalLabel">新規会社登録</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="閉じる"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <form
+                id="company-form"
+                action="#"
+                th:action="@{/admin/companies/edit}"
+                method="post"
+                th:object="${companyForm}"
+              >
+                <div class="mb-3">
+                  <label class="form-label" for="name">会社名</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    th:field="*{name}"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="postal-code"
+                    >郵便番号 (ハイフンなし)</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="postal-code"
+                    th:field="*{postalCode}"
+                    pattern="^\d{7}$"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="prefecture">都道府県</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="prefecture"
+                    th:field="*{prefecture}"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="city">市区町村</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="city"
+                    th:field="*{city}"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="address1">住所1</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="address1"
+                    th:field="*{address1}"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="address2">住所2</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="address2"
+                    th:field="*{address2}"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="tel" class="form-label"
+                    >電話番号 (ハイフンなし)</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="tel"
+                    th:field="*{tel}"
+                    pattern="^\d{11,12}$"
+                    required
+                  />
+                </div>
+                <div class="mb-3 d-none">
+                  <label class="form-label" for="status">ステータス</label
+                  ><input
+                    class="form-control"
+                    id="status"
+                    th:field="*{status}"
+                    type="text"
+                  />
+                </div>
+                <input class="d-none" type="text" id="id" th:field="*{id}" />
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                閉じる
+              </button>
+              <button
+                form="company-form"
+                id="company-form-submit"
+                type="submit"
+                class="btn btn-primary"
+              >
+                登録
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container py-5">
+        <table class="ui celled table">
+          <thead class="">
             <tr class="">
-              <th class="collapsing">詳細</th>
+              <th class=""></th>
               <th class="">会社名</th>
               <th class="one wide">郵便番号</th>
               <th class="one wide">住所</th>
@@ -27,18 +193,114 @@
           </thead>
           <tbody class="">
             <tr th:each="company : ${companies}">
-              <td class="collapsing">
-                <a th:href="@{/company/details/{id}(id=${company.id})}">詳細</a>
-              </td>
+              <td><a href="javascript:void(0)" class="edit-link">編集</a></td>
               <td th:text="${company.name}">会社名</td>
               <td class="one wide" th:text="${company.postalCode}">郵便番号</td>
-              <td class="one wide" th:text="${company.address}">住所</td>
+              <td
+                class="one wide"
+                th:text="${company.prefecture}+${company.city}+${company.address1}+(${company.address2} ?: '')"
+              >
+                住所
+              </td>
               <td class="one wide" th:text="${company.tel}">電話番号</td>
               <td th:text="${company.status}">ステータス</td>
+              <td class="d-none" th:text="${company.prefecture}"></td>
+              <td class="d-none" th:text="${company.city}"></td>
+              <td class="d-none" th:text="${company.address1}"></td>
+              <td class="d-none" th:text="${company.address2}"></td>
+              <td class="d-none" th:text="${company.id}"></td>
             </tr>
           </tbody>
         </table>
       </div>
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          let companyForm = ''
+          let originalData = ''
+
+          // Add a listener for the add button
+          // This will be executed when the button is clicked
+          // and will hide status text field
+          // a
+          document
+            .querySelector('#add-modal-button')
+            .addEventListener('click', function () {
+              let classList = document
+                .getElementById('status')
+                .closest('div').classList
+              classList.add('d-none')
+
+              let form = document.getElementById('company-form')
+              form.action = '/admin/companies/add'
+              document.getElementById('name').value = ''
+              document.getElementById('postal-code').value = ''
+              document.getElementById('prefecture').value = ''
+              document.getElementById('city').value = ''
+              document.getElementById('address1').value = ''
+              document.getElementById('address2').value = ''
+              document.getElementById('tel').value = ''
+              document.getElementById('status').value = ''
+              document.getElementById('id').value = ''
+            })
+
+          document.querySelectorAll('.edit-link').forEach(function (link) {
+            link.addEventListener('click', function () {
+              let row = this.closest('tr')
+              let data = Array.from(row.children).map(
+                (cell) => cell.textContent
+              )
+
+              document.getElementById('companyModalLabel').textContent =
+                '会社情報編集'
+              let classList = document
+                .getElementById('status')
+                .closest('div').classList
+              classList.remove('d-none')
+
+              // Assuming the company data is stored in a data-attribute on the button
+              // Updating the modal fields
+              document.getElementById('name').value = data[1]
+              document.getElementById('postal-code').value = data[2]
+              document.getElementById('prefecture').value = data[6]
+              document.getElementById('city').value = data[7]
+              document.getElementById('address1').value = data[8]
+              document.getElementById('address2').value = data[9]
+              document.getElementById('tel').value = data[4]
+              document.getElementById('status').value = data[5]
+              document.getElementById('id').value = data[10]
+
+              let form = document.getElementById('company-form')
+              form.action = '/admin/companies/edit'
+
+              document.querySelector('#company-form-submit').disabled = true
+              companyForm = document.getElementById('company-form')
+              originalData = new FormData(companyForm)
+
+              // Open the modal
+              var modal = new bootstrap.Modal(
+                document.getElementById('companyModal')
+              )
+              modal.show()
+            })
+          })
+
+          let form = document.getElementById('company-form')
+          form.addEventListener('input', function () {
+            form = document.getElementById('company-form')
+            let currentData = new FormData(form)
+            let hasChanged = false
+
+            for (let key of originalData.keys()) {
+              if (originalData.get(key) !== currentData.get(key)) {
+                hasChanged = true
+                break
+              }
+            }
+            document.querySelector('#company-form-submit').disabled =
+              !hasChanged
+          })
+        })
+      </script>
     </div>
   </body>
 </html>

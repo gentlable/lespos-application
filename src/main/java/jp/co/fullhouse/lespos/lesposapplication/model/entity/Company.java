@@ -17,4 +17,26 @@ public class Company {
 
   @Column
   private String name;
+
+  @Column
+  private String city;
+
+  @Column
+  private String prefecture;
+
+  @Column
+  private String address1;
+
+  @Column
+  private String address2;
+
+  @Column
+  private String tel;
+
+  @Column
+  private String postalCode;
+
+  @Column
+  private int status;
+
 }
