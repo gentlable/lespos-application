@@ -17,11 +17,15 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.transaction.Transactional;
+import jp.co.fullhouse.lespos.lesposapplication.model.entity.Image;
+import jp.co.fullhouse.lespos.lesposapplication.model.entity.Invoice;
 import jp.co.fullhouse.lespos.lesposapplication.model.form.FileUploadForm;
 import jp.co.fullhouse.lespos.lesposapplication.model.service.GmailSender;
+import jp.co.fullhouse.lespos.lesposapplication.model.service.ImagesService;
+import jp.co.fullhouse.lespos.lesposapplication.model.service.InvoicesService;
 import jp.co.fullhouse.lespos.lesposapplication.model.service.S3Service;
 import jp.co.fullhouse.lespos.lesposapplication.utils.GoogleApiUtils;
-import lombok.AllArgsConstructor;
 
 /**
  * 各機能への画面遷移を管理するコントローラー
@@ -30,10 +34,15 @@ import lombok.AllArgsConstructor;
 public class LesposController {
   private final GmailSender gmailSender;
   private final S3Service s3Service;
+  private final ImagesService imagesService;
+  private final InvoicesService invoicesService;
 
-  public LesposController(GmailSender gmailSender, S3Service s3Service) {
+  public LesposController(GmailSender gmailSender, S3Service s3Service, ImagesService imagesService,
+      InvoicesService invoicesService) {
     this.gmailSender = gmailSender;
     this.s3Service = s3Service;
+    this.imagesService = imagesService;
+    this.invoicesService = invoicesService;
   }
 
   private String callbackUrl = "http://localhost:8080/callback";
@@ -135,11 +144,19 @@ public class LesposController {
   /**
    * 請求書をアップロードする。
    */
+  @Transactional
   @PostMapping("/invoice/upload")
   public String invoiceUpload(Model model, @ModelAttribute("fileUploadForm") FileUploadForm fileUploadForm) {
     fileUploadForm.setCreateAt(LocalDateTime.now());
     // S3にファイルをアップロードする
-    s3Service.fileUpload(fileUploadForm, "/invoice/");
+    String filePath = s3Service.fileUpload(fileUploadForm, "/invoice/");
+    fileUploadForm.setFilePath(filePath);
+    // Imagesテーブルにファイル情報を登録する
+    Image image = imagesService.createImage(fileUploadForm);
+    fileUploadForm.setId(image.getId());
+    // invoicesテーブルに請求書情報を登録する
+    Invoice invoice = invoicesService.createInvoice(fileUploadForm);
+
     model.addAttribute("fileUploadForm", new FileUploadForm());
     model.addAttribute("message", "アップロードが完了しました。");
     return "invoice/upload";

@@ -55,11 +55,11 @@ public class S3Service {
 
       s3Client.putObject(PutObjectRequest.builder()
           .bucket(bucket)
-          .key(fileName)
+          .key(s3PathName + fileName)
           .build(),
           RequestBody.fromBytes(bytes));
 
-      return fileName;
+      return s3PathName + fileName;
     } catch (S3Exception e) {
       e.printStackTrace();
       throw new RuntimeException(e);
