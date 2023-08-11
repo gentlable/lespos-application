@@ -133,7 +133,7 @@ public class LesposController {
   }
 
   /**
-   * 請求書アップロード画面へ遷移する
+   * 請求書をアップロードする。
    */
   @PostMapping("/invoice/upload")
   public String invoiceUpload(Model model, @ModelAttribute("fileUploadForm") FileUploadForm fileUploadForm) {
@@ -159,6 +159,14 @@ public class LesposController {
   @GetMapping("/invoiceDetail")
   public String invoiceDetail() {
     return "invoiceDetail";
+  }
+
+  /**
+   * 請求書情報登録画面へ遷移する
+   */
+  @GetMapping("/invoice/input")
+  public String invoiceInput() {
+    return "invoice/input";
   }
 
 }
