@@ -1,11 +1,14 @@
 package jp.co.fullhouse.lespos.lesposapplication.controller;
 
+import java.time.LocalDateTime;
 import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.google.api.client.auth.oauth2.Credential;
@@ -14,8 +17,11 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import jp.co.fullhouse.lespos.lesposapplication.model.form.FileUploadForm;
 import jp.co.fullhouse.lespos.lesposapplication.model.service.GmailSender;
+import jp.co.fullhouse.lespos.lesposapplication.model.service.S3Service;
 import jp.co.fullhouse.lespos.lesposapplication.utils.GoogleApiUtils;
+import lombok.AllArgsConstructor;
 
 /**
  * 各機能への画面遷移を管理するコントローラー
@@ -23,12 +29,14 @@ import jp.co.fullhouse.lespos.lesposapplication.utils.GoogleApiUtils;
 @Controller
 public class LesposController {
   private final GmailSender gmailSender;
+  private final S3Service s3Service;
+
+  public LesposController(GmailSender gmailSender, S3Service s3Service) {
+    this.gmailSender = gmailSender;
+    this.s3Service = s3Service;
+  }
 
   private String callbackUrl = "http://localhost:8080/callback";
-
-  public LesposController(GmailSender gmailSender) {
-    this.gmailSender = gmailSender;
-  }
 
   @Value("${aws.cognito.user-pool.id}")
   private String userPoolId;
@@ -115,11 +123,26 @@ public class LesposController {
   }
 
   /**
-   * 請求書情報登録画面へ遷移する
+   * 請求書アップロード画面へ遷移する
    */
-  @GetMapping("/invoice")
-  public String invoice() {
-    return "invoice";
+  @GetMapping("/invoice/upload")
+  public String invoiceUploadView(Model model) {
+    FileUploadForm fileUploadForm = new FileUploadForm();
+    model.addAttribute("fileUploadForm", fileUploadForm);
+    return "invoice/upload";
+  }
+
+  /**
+   * 請求書アップロード画面へ遷移する
+   */
+  @PostMapping("/invoice/upload")
+  public String invoiceUpload(Model model, @ModelAttribute("fileUploadForm") FileUploadForm fileUploadForm) {
+    fileUploadForm.setCreateAt(LocalDateTime.now());
+    // S3にファイルをアップロードする
+    s3Service.fileUpload(fileUploadForm, "/invoice/");
+    model.addAttribute("fileUploadForm", new FileUploadForm());
+    model.addAttribute("message", "アップロードが完了しました。");
+    return "invoice/upload";
   }
 
   /**

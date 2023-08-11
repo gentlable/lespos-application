@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+  layout:decorate="~{layout/common/default}"
+>
+  <body>
+    <div layout:fragment="content">
+      <header
+        th:replace="fragment/common/header :: header ('請求書アップロード')"
+      ></header>
+      <div class="h-100 row mb-4">
+        <div class="col-6">
+          <form
+            id="category"
+            enctype="multipart/form-data"
+            th:action="@{/invoice/upload}"
+            method="post"
+          >
+            <div
+              id="drop-area"
+              class="drop-area mb-3"
+              th:object="${fileUploadForm}"
+            >
+              <span class="drop-text"
+                >ファイルをここにドラッグ&ドロップまたは</span
+              >
+              <input
+                type="file"
+                th:field="*{multipartFile}"
+                class="form-control"
+                accept=".pdf"
+                id="inputGroupFile01"
+                required
+              />
+            </div>
+            <button class="btn btn-primary" type="submit">登録</button>
+          </form>
+        </div>
+        <div class="col-6 right">
+          <embed
+            id="filePreview"
+            src=""
+            width="100%"
+            height="100%"
+            type="application/pdf"
+          />
+        </div>
+      </div>
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          var dropArea = document.getElementById('drop-area')
+          var input = document.getElementById('inputGroupFile01')
+
+          ;['dragenter', 'dragover'].forEach((eventName) => {
+            dropArea.addEventListener(
+              eventName,
+              (e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                dropArea.classList.add('highlight')
+              },
+              false
+            )
+          })
+          ;['dragleave', 'drop'].forEach((eventName) => {
+            dropArea.addEventListener(
+              eventName,
+              (e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                dropArea.classList.remove('highlight')
+              },
+              false
+            )
+          })
+
+          dropArea.addEventListener(
+            'drop',
+            (e) => {
+              let files = e.dataTransfer.files
+              let errorflg = false
+
+              if (files.length !== 1) {
+                // アラートでエラーを表示
+                alert('ファイルは1件ずつアップロードしてください。')
+
+                // ファイルの選択をクリア
+                e.preventDefault()
+                input.value = null
+                errorflg = true
+              }
+              let fileName = files[0].name
+              let fileExtension = fileName.slice(
+                ((fileName.lastIndexOf('.') - 1) >>> 0) + 2
+              )
+              if (fileExtension !== 'pdf') {
+                // アラートでエラーを表示
+                alert('アップロードできるファイルはPDFファイルのみです。')
+
+                // ファイルの選択をクリア
+                e.preventDefault()
+                input.value = null
+                errorflg = true
+              }
+
+              if (!errorflg) {
+                // ファイルをinput要素に関連付ける
+                input.files = files
+                // 最初のファイルを<embed>タグで表示（複数ファイルの場合は最初のファイルのみ）
+                document.getElementById('filePreview').src =
+                  URL.createObjectURL(files[0])
+              }
+            },
+            false
+          )
+          input.addEventListener('change', function () {
+            if (this.files[0]) {
+              document.getElementById('filePreview').src = URL.createObjectURL(
+                this.files[0]
+              )
+            } else {
+              document.getElementById('filePreview').src = null
+            }
+          })
+        })
+      </script>
+      <style>
+        .drop-area {
+          border: 2px dashed #ccc;
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          position: relative;
+        }
+
+        .drop-area.highlight {
+          border-color: #f00;
+        }
+
+        .drop-text {
+          margin-bottom: 10px;
+        }
+      </style>
+    </div>
+  </body>
+</html>
