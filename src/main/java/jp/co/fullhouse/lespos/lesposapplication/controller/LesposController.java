@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.api.client.auth.oauth2.Credential;
 
@@ -180,19 +181,13 @@ public class LesposController {
   }
 
   /**
-   * 請求書情報詳細画面へ遷移する
+   * 請求書情報の登録をする
    */
-  @GetMapping("/invoiceDetail")
-  public String invoiceDetail() {
-    return "invoiceDetail";
-  }
-
-  /**
-   * 請求書情報登録画面へ遷移する
-   */
-  @GetMapping("/invoice/input")
-  public String invoiceInput() {
-    return "invoice/input";
+  @PostMapping("/invoice/edit")
+  public String invoiceInput(@ModelAttribute InvoiceForm invoiceForm, RedirectAttributes redirectAttributes) {
+    invoicesService.updateInvoice(invoiceForm);
+    redirectAttributes.addFlashAttribute("message", "会社登録が完了しました。");
+    return "redirect:/invoice/list";
   }
 
 }

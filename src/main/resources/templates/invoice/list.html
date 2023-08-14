@@ -46,7 +46,13 @@
         <div class="col-6 right" id="rightDiv" style="position: relative">
           <div class="sidebar" style="left: 0px">
             <div class="container">
-              <form>
+              <form
+                id="invoice-form"
+                action="#"
+                th:action="@{/invoice/edit}"
+                method="post"
+                th:object="${invoiceForm}"
+              >
                 <div class="mb-4">
                   <div class="flex">
                     <a href="javascript:void(0)" class="close-link">×</a>
@@ -55,6 +61,10 @@
                   </div>
                   <table class="table table-striped mt-3">
                     <tbody>
+                      <input type="hidden" th:field="*{id}" />
+                      <input type="hidden" th:field="*{company_id}" />
+                      <input type="hidden" th:field="*{image_id}" />
+                      <input type="hidden" th:field="*{status}" />
                       <tr>
                         <td>取引先</td>
                         <td>
@@ -62,6 +72,7 @@
                             class="form-control"
                             id="client_name"
                             type="text"
+                            th:field="*{clientName}"
                           />
                         </td>
                       </tr>
@@ -72,6 +83,7 @@
                             class="form-control"
                             type="text"
                             id="invoiced_amount"
+                            th:field="*{invoicedAmount}"
                           />
                         </td>
                       </tr>
@@ -82,6 +94,7 @@
                             class="form-control"
                             type="text"
                             id="consumption_tax_rate"
+                            th:field="*{consumptionTaxRate}"
                           />
                         </td>
                       </tr>
@@ -92,6 +105,7 @@
                             class="form-control"
                             type="text"
                             id="tax_amount"
+                            th:field="*{taxAmount}"
                           />
                         </td>
                       </tr>
@@ -102,6 +116,7 @@
                             class="form-control"
                             type="text"
                             id="excluding_tax_amount"
+                            th:field="*{excludingTaxAmount}"
                           />
                         </td>
                       </tr>
@@ -112,6 +127,7 @@
                             class="form-control"
                             type="text"
                             id="including_tax_amount"
+                            th:field="*{includingTaxAmount}"
                           />
                         </td>
                       </tr>
@@ -122,6 +138,7 @@
                             class="form-control"
                             id="payment_due_date"
                             type="date"
+                            th:field="*{paymentDueDate}"
                           />
                         </td>
                       </tr>
@@ -132,6 +149,7 @@
                             class="form-control"
                             type="text"
                             id="payment_method"
+                            th:field="*{paymentMethod}"
                           />
                         </td>
                       </tr>
@@ -142,6 +160,7 @@
                             class="form-control"
                             type="text"
                             id="invoice_type"
+                            th:field="*{invoiceType}"
                           />
                         </td>
                       </tr>
@@ -153,6 +172,7 @@
                             class="form-control"
                             type="text"
                             id="bank_code"
+                            th:field="*{bankCode}"
                           />
                         </td>
                       </tr>
@@ -163,6 +183,7 @@
                             class="form-control"
                             type="text"
                             id="bank_name"
+                            th:field="*{bankName}"
                           />
                         </td>
                       </tr>
@@ -173,6 +194,7 @@
                             class="form-control"
                             type="text"
                             id="branch_code"
+                            th:field="*{branchCode}"
                           />
                         </td>
                       </tr>
@@ -183,6 +205,7 @@
                             class="form-control"
                             type="text"
                             id="branch_name"
+                            th:field="*{branchName}"
                           />
                         </td>
                       </tr>
@@ -193,6 +216,7 @@
                             class="form-control"
                             type="text"
                             id="account_type"
+                            th:field="*{accountType}"
                           />
                         </td>
                       </tr>
@@ -203,6 +227,7 @@
                             class="form-control"
                             type="text"
                             id="account_number"
+                            th:field="*{accountNumber}"
                           />
                         </td>
                       </tr>
@@ -213,6 +238,7 @@
                             class="form-control"
                             type="text"
                             id="account_holder_name"
+                            th:field="*{accountHolderName}"
                           />
                         </td>
                       </tr>
@@ -271,6 +297,11 @@
                 let invoice = invoices[rowIndex]
 
                 if (selectedRow !== rowIndex) {
+                  document.getElementById('id').value = invoice.id
+                  document.getElementById('company_id').value =
+                    invoice.companyId
+                  document.getElementById('image_id').value = invoice.imageId
+                  document.getElementById('status').value = invoice.status
                   document.getElementById('client_name').value =
                     invoice.clientName
                   document.getElementById('invoiced_amount').value =

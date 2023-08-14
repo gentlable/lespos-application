@@ -22,10 +22,10 @@ import lombok.Setter;
 public class Invoice {
 
   @Id
-  @Column(length = 36, nullable = false, unique = true)
+  @Column(length = 36, nullable = false, updatable = false, unique = true)
   private String id = UUID.randomUUID().toString();
 
-  @Column(name = "company_id", length = 36, nullable = false)
+  @Column(name = "company_id", length = 36, nullable = false, updatable = false)
   private String companyId;
 
   @Column(nullable = false)
@@ -88,7 +88,7 @@ public class Invoice {
   @Column(name = "account_holder_name", length = 255)
   private String accountHolderName;
 
-  @Column(name = "image_id", length = 36, nullable = false)
+  @Column(name = "image_id", length = 36, nullable = false, updatable = false)
   private String imageId;
 
   @Column(name = "created_at", nullable = false, insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
