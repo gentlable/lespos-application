@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+  layout:decorate="~{layout/common/default}"
+>
+  <body>
+    <div layout:fragment="content">
+      <header
+        th:replace="fragment/common/header :: header ('請求書一覧')"
+      ></header>
+      <div class="h-100 row mb-4" style="position: relative">
+        <div class="col-6 left">
+          <table class="ui celled table">
+            <thead class="">
+              <tr class="">
+                <th class="">詳細</th>
+                <th class="">状態</th>
+                <th class="one wide">取引先・支払期日 / 請求金額</th>
+                <th class="one wide">支払方法</th>
+                <th class="one wide">オンライン受領方法</th>
+                <th class="">請求書種別</th>
+                <th class="">登録日時</th>
+              </tr>
+            </thead>
+            <tbody class="">
+              <tr th:each="invoice : ${invoices}">
+                <td><a href="javascript:void(0)" class="edit-link">詳細</a></td>
+                <td th:text="${invoice.status}">ステータス</td>
+                <td class="one wide" th:text="${invoice.clientName}">
+                  取引先・支払い期日 / 請求金額
+                </td>
+                <td class="one wide" th:text="${invoice.paymentMethod}">
+                  支払方法
+                </td>
+                <td th:text="${invoice.submitMethod}">オンライン受領方法</td>
+                <td th:text="${invoice.invoiceType}"></td>
+                <td
+                  th:text="${#dates.format(invoice.createdAt, 'yyyy/MM/dd HH:mm:ss')}"
+                ></td>
+              </tr>
+              <div></div>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-6 right" id="rightDiv" style="position: relative">
+          <div class="sidebar" style="left: 0px">
+            <div class="container">
+              <form>
+                <div class="mb-4">
+                  <div class="flex">
+                    <a href="javascript:void(0)" class="close-link">×</a>
+                    <h5 class="border-bottom pb-2">請求書情報</h5>
+                    <span id="created_at"></span>
+                  </div>
+                  <table class="table table-striped mt-3">
+                    <tbody>
+                      <tr>
+                        <td>取引先</td>
+                        <td>
+                          <input
+                            class="form-control"
+                            id="client_name"
+                            type="text"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>請求金額</td>
+                        <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="invoiced_amount"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>消費税率</td>
+                        <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="consumption_tax_rate"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>税額</td>
+                        <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="tax_amount"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>税抜金額</td>
+                        <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="excluding_tax_amount"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>税込金額</td>
+                        <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="including_tax_amount"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>支払期日</td>
+                        <td>
+                          <input
+                            class="form-control"
+                            id="payment_due_date"
+                            type="date"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>支払方法</td>
+                        <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="payment_method"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>請求書種別</td>
+                        <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="invoice_type"
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>銀行コード</td>
+                        <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="bank_code"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>銀行名</td>
+                        <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="bank_name"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>支店コード</td>
+                        <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="branch_code"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>支店名</td>
+                        <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="branch_name"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>口座種別</td>
+                        <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="account_type"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>口座番号</td>
+                        <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="account_number"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>口座名義人</td>
+                        <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="account_holder_name"
+                          />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                  変更を保存する
+                </button>
+              </form>
+            </div>
+          </div>
+          <div class="right-1">
+            <embed
+              id="filePreview"
+              src=""
+              width="100%"
+              height="100%"
+              type="application/pdf"
+            />
+          </div>
+        </div>
+      </div>
+
+      <style>
+        .sidebar {
+          position: absolute;
+          z-index: 1;
+          width: 40vw; /* sidebar の幅を 40vw に設定 */
+          transition: all 0.5s 0s ease;
+          background-color: white;
+          height: 100%;
+          overflow: auto;
+        }
+        .right-1 {
+          position: absolute;
+          right: 0;
+          background-color: cadetblue;
+          z-index: 2;
+          width: 100%;
+          height: 100%;
+        }
+      </style>
+
+      <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+          let selectedRow = null
+
+          let invoices =
+            /*[[${invoices}]]*/
+
+            document.querySelectorAll('.edit-link').forEach(function (link) {
+              link.addEventListener('click', function () {
+                let row = this.closest('tr')
+                let rowIndex = Array.from(row.parentNode.children).indexOf(row)
+                let invoice = invoices[rowIndex]
+
+                if (selectedRow !== rowIndex) {
+                  document.getElementById('client_name').value =
+                    invoice.clientName
+                  document.getElementById('invoiced_amount').value =
+                    invoice.invoicedAmount
+                  document.getElementById('consumption_tax_rate').value =
+                    invoice.consumptionTaxRate
+                  document.getElementById('tax_amount').value =
+                    invoice.taxAmount
+                  document.getElementById('excluding_tax_amount').value =
+                    invoice.excludingTaxAmount
+                  document.getElementById('including_tax_amount').value =
+                    invoice.includingTaxAmount
+                  document.getElementById('payment_due_date').value =
+                    invoice.paymentDueDate
+                  document.getElementById('payment_method').value =
+                    invoice.paymentMethod
+                  document.getElementById('invoice_type').value =
+                    invoice.invoiceType
+                  document.getElementById('bank_code').value = invoice.bankCode
+                  document.getElementById('bank_name').value = invoice.bankName
+                  document.getElementById('branch_code').value =
+                    invoice.branchCode
+                  document.getElementById('branch_name').value =
+                    invoice.branchName
+                  document.getElementById('account_type').value =
+                    invoice.accountType
+                  document.getElementById('account_number').value =
+                    invoice.accountNumber
+                  document.getElementById('account_holder_name').value =
+                    invoice.accountHolderName
+
+                  const date = new Date(invoice.createdAt)
+                  const formattedDate = `${date.getFullYear()}/${String(
+                    date.getMonth() + 1
+                  ).padStart(2, '0')}/${String(date.getDate()).padStart(
+                    2,
+                    '0'
+                  )} ${String(date.getHours()).padStart(2, '0')}:${String(
+                    date.getMinutes()
+                  ).padStart(2, '0')}:${String(date.getSeconds()).padStart(
+                    2,
+                    '0'
+                  )}`
+
+                  document.getElementById('created_at').innerText =
+                    '登録日時 ' + formattedDate
+
+                  let filePreview = document.getElementById('filePreview')
+                  filePreview.src =
+                    'data:application/pdf;base64,' + invoice.base64Image
+                }
+                selectedRow = rowIndex
+
+                const left1 = document.querySelector('.sidebar')
+
+                if (left1.style.left === '0px') {
+                  left1.style.left = '-40vw'
+                }
+              })
+            })
+          document
+            .querySelector('.close-link')
+            .addEventListener('click', function () {
+              const left1 = document.querySelector('.sidebar')
+              left1.style.left = '-0px'
+            })
+        })
+      </script>
+    </div>
+  </body>
+</html>

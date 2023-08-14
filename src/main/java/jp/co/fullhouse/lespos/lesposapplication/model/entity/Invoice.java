@@ -7,7 +7,11 @@ import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -87,6 +91,16 @@ public class Invoice {
   @Column(name = "image_id", length = 36, nullable = false)
   private String imageId;
 
-  @Column(name = "created_at", length = 255)
-  private String createdAt;
+  @Column(name = "created_at", nullable = false, insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+  @Temporal(TemporalType.TIMESTAMP)
+  private Timestamp createdAt;
+
+  @ManyToOne
+  @JoinColumn(name = "company_id", insertable = false, updatable = false)
+  private Company company;
+
+  @ManyToOne
+  @JoinColumn(name = "image_id", insertable = false, updatable = false)
+  private Image image;
+
 }

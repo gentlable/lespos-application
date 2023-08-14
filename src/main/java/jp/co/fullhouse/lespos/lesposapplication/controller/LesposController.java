@@ -1,6 +1,7 @@
 package jp.co.fullhouse.lespos.lesposapplication.controller;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -18,9 +19,11 @@ import jakarta.mail.Session;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
+import jp.co.fullhouse.lespos.lesposapplication.model.dto.InvoiceDto;
 import jp.co.fullhouse.lespos.lesposapplication.model.entity.Image;
 import jp.co.fullhouse.lespos.lesposapplication.model.entity.Invoice;
 import jp.co.fullhouse.lespos.lesposapplication.model.form.FileUploadForm;
+import jp.co.fullhouse.lespos.lesposapplication.model.form.InvoiceForm;
 import jp.co.fullhouse.lespos.lesposapplication.model.service.GmailSender;
 import jp.co.fullhouse.lespos.lesposapplication.model.service.ImagesService;
 import jp.co.fullhouse.lespos.lesposapplication.model.service.InvoicesService;
@@ -165,9 +168,15 @@ public class LesposController {
   /**
    * 請求書情報一覧画面へ遷移する
    */
-  @GetMapping("/invoiceList")
-  public String invoiceList() {
-    return "invoiceList";
+  @GetMapping("/invoice/list")
+  public String invoiceList(Model model, @ModelAttribute("invoiceForm") InvoiceForm invoiceForm) {
+    List<InvoiceDto> invoices = invoicesService.getInvoices();
+    for (InvoiceDto invoiceDto : invoices) {
+      invoiceDto.setBase64Image(s3Service.fileDownload(invoiceDto.getImage().getFilePath()));
+    }
+
+    model.addAttribute("invoices", invoices);
+    return "invoice/list";
   }
 
   /**

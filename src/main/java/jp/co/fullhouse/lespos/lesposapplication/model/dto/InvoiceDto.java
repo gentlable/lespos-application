@@ -1,6 +1,7 @@
 
 package jp.co.fullhouse.lespos.lesposapplication.model.dto;
 
+import java.sql.Timestamp;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,5 +32,9 @@ public class InvoiceDto {
   private String accountNumber;
   private String accountHolderName;
   private String imageId;
-  private String createdBy;
+  private Timestamp createdAt;
+  private CompanyDto company;
+  private ImageDto image;
+
+  private String base64Image;
 }

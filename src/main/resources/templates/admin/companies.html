@@ -201,11 +201,6 @@
               </td>
               <td class="one wide" th:text="${company.tel}">電話番号</td>
               <td th:text="${company.status}">ステータス</td>
-              <td class="d-none" th:text="${company.prefecture}"></td>
-              <td class="d-none" th:text="${company.city}"></td>
-              <td class="d-none" th:text="${company.address1}"></td>
-              <td class="d-none" th:text="${company.address2}"></td>
-              <td class="d-none" th:text="${company.id}"></td>
             </tr>
           </tbody>
         </table>
@@ -219,42 +214,44 @@
           戻る
         </button>
       </div>
-      <script>
+      <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', function () {
           let companyForm = ''
           let originalData = ''
 
-          // Add a listener for the add button
-          // This will be executed when the button is clicked
-          // and will hide status text field
-          // a
-          document
-            .querySelector('#add-modal-button')
-            .addEventListener('click', function () {
-              let classList = document
-                .getElementById('status')
-                .closest('div').classList
-              classList.add('d-none')
+          var companies =
+            /*[[${companies}]]*/
 
-              let form = document.getElementById('company-form')
-              form.action = '/admin/companies/add'
-              document.getElementById('name').value = ''
-              document.getElementById('postal-code').value = ''
-              document.getElementById('prefecture').value = ''
-              document.getElementById('city').value = ''
-              document.getElementById('address1').value = ''
-              document.getElementById('address2').value = ''
-              document.getElementById('tel').value = ''
-              document.getElementById('status').value = ''
-              document.getElementById('id').value = ''
-            })
+            // Add a listener for the add button
+            // This will be executed when the button is clicked
+            // and will hide status text field
+            // a
+            document
+              .querySelector('#add-modal-button')
+              .addEventListener('click', function () {
+                let classList = document
+                  .getElementById('status')
+                  .closest('div').classList
+                classList.add('d-none')
+
+                let form = document.getElementById('company-form')
+                form.action = '/admin/companies/add'
+                document.getElementById('name').value = ''
+                document.getElementById('postal-code').value = ''
+                document.getElementById('prefecture').value = ''
+                document.getElementById('city').value = ''
+                document.getElementById('address1').value = ''
+                document.getElementById('address2').value = ''
+                document.getElementById('tel').value = ''
+                document.getElementById('status').value = ''
+                document.getElementById('id').value = ''
+              })
 
           document.querySelectorAll('.edit-link').forEach(function (link) {
             link.addEventListener('click', function () {
               let row = this.closest('tr')
-              let data = Array.from(row.children).map(
-                (cell) => cell.textContent
-              )
+              let rowIndex = Array.from(row.parentNode.children).indexOf(row)
+              let company = companies[rowIndex]
 
               document.getElementById('companyModalLabel').textContent =
                 '会社情報編集'
@@ -265,15 +262,15 @@
 
               // Assuming the company data is stored in a data-attribute on the button
               // Updating the modal fields
-              document.getElementById('name').value = data[1]
-              document.getElementById('postal-code').value = data[2]
-              document.getElementById('prefecture').value = data[6]
-              document.getElementById('city').value = data[7]
-              document.getElementById('address1').value = data[8]
-              document.getElementById('address2').value = data[9]
-              document.getElementById('tel').value = data[4]
-              document.getElementById('status').value = data[5]
-              document.getElementById('id').value = data[10]
+              document.getElementById('id').value = company.id
+              document.getElementById('name').value = company.name
+              document.getElementById('postal-code').value = company.postalCode
+              document.getElementById('prefecture').value = company.parfecture
+              document.getElementById('city').value = company.city
+              document.getElementById('address1').value = company.address1
+              document.getElementById('address2').value = company.address2
+              document.getElementById('tel').value = company.tel
+              document.getElementById('status').value = company.status
 
               let form = document.getElementById('company-form')
               form.action = '/admin/companies/edit'
