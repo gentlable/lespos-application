@@ -177,29 +177,34 @@
         </div>
       </div>
       <div class="container py-5">
-        <table class="ui celled table">
-          <thead class="">
-            <tr class="">
-              <th class=""></th>
-              <th class="">会社名</th>
-              <th class="one wide">郵便番号</th>
-              <th class="one wide">住所</th>
-              <th class="one wide">電話番号</th>
-              <th class="">ステータス</th>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">会社名</th>
+              <th scope="col" class="w-25">郵便番号</th>
+              <th scope="col" class="w-25">住所</th>
+              <th scope="col" class="w-25">電話番号</th>
+              <th scope="col">ステータス</th>
             </tr>
           </thead>
-          <tbody class="">
+          <tbody>
             <tr th:each="company : ${companies}">
-              <td><a href="javascript:void(0)" class="edit-link">編集</a></td>
+              <td>
+                <a
+                  href="javascript:void(0)"
+                  class="edit-link text-decoration-none"
+                  >編集</a
+                >
+              </td>
               <td th:text="${company.name}">会社名</td>
-              <td class="one wide" th:text="${company.postalCode}">郵便番号</td>
+              <td th:text="${company.postalCode}">郵便番号</td>
               <td
-                class="one wide"
-                th:text="${company.prefecture}+${company.city}+${company.address1}+(${company.address2} ?: '')"
+                th:text="${company.prefecture} + ' ' + ${company.city} + ' ' + ${company.address1} + (' ' + ${company.address2} ?: '')"
               >
                 住所
               </td>
-              <td class="one wide" th:text="${company.tel}">電話番号</td>
+              <td th:text="${company.tel}">電話番号</td>
               <td th:text="${company.status}">ステータス</td>
             </tr>
           </tbody>
@@ -265,7 +270,7 @@
               document.getElementById('id').value = company.id
               document.getElementById('name').value = company.name
               document.getElementById('postal-code').value = company.postalCode
-              document.getElementById('prefecture').value = company.parfecture
+              document.getElementById('prefecture').value = company.prefecture
               document.getElementById('city').value = company.city
               document.getElementById('address1').value = company.address1
               document.getElementById('address2').value = company.address2
