@@ -33,15 +33,6 @@
         </form>
       </div>
 
-      <button
-        type="button"
-        class="btn btn-success"
-        id="add-modal-button"
-        data-bs-toggle="modal"
-        data-bs-target="#companyModal"
-      >
-        新規登録
-      </button>
       <!-- Modal 新規会社登録 -->
       <div
         class="modal fade"
@@ -182,6 +173,17 @@
         </div>
       </div>
       <div class="container py-5">
+        <div class="fload-end">
+          <button
+            type="button"
+            class="btn btn-success"
+            id="add-modal-button"
+            data-bs-toggle="modal"
+            data-bs-target="#companyModal"
+          >
+            新規登録
+          </button>
+        </div>
         <table class="table table-bordered">
           <thead>
             <tr>
@@ -214,15 +216,15 @@
             </tr>
           </tbody>
         </table>
-      </div>
-      <div>
-        <button
-          class="btn btn-primary"
-          type="button"
-          onclick="window.location.href='/'"
-        >
-          戻る
-        </button>
+        <div>
+          <button
+            class="btn btn-primary"
+            type="button"
+            onclick="window.location.href='/'"
+          >
+            戻る
+          </button>
+        </div>
       </div>
       <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', function () {
