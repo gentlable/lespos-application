@@ -64,8 +64,7 @@ public class CompaniesService {
     Company company = new Company();
     BeanUtils.copyProperties(form, company);
 
-    companiesRepository.insert(company.getName(), company.getPrefecture(), company.getCity(), company.getPostalCode(),
-        company.getAddress1(), company.getAddress2(), company.getTel());
+    companiesRepository.save(company);
   }
 
   /**

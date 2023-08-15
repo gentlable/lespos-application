@@ -3,6 +3,7 @@ package jp.co.fullhouse.lespos.lesposapplication.model.form;
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.validation.constraints.NotBlank;
+import jp.co.fullhouse.lespos.lesposapplication.utils.constant.CompanyStatus;
 
 @Getter
 @Setter
@@ -20,5 +21,7 @@ public class CompanyForm {
   private String address1;
   private String address2;
   private String tel;
-  private int status;
+  private int statusCode;
+  private CompanyStatus status;
+
 }

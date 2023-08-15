@@ -145,13 +145,18 @@
                   />
                 </div>
                 <div class="mb-3 d-none">
-                  <label class="form-label" for="status">ステータス</label
-                  ><input
+                  <label class="form-label" for="status">ステータス</label>
+                  <select
+                    th:field="*{statusCode}"
                     class="form-control"
-                    id="status"
-                    th:field="*{status}"
-                    type="text"
-                  />
+                    id="statusCode"
+                  >
+                    <option
+                      th:each="status : ${statuses}"
+                      th:value="${status.code}"
+                      th:text="${status.name}"
+                    ></option>
+                  </select>
                 </div>
                 <input class="d-none" type="text" id="id" th:field="*{id}" />
               </form>
@@ -205,7 +210,7 @@
                 住所
               </td>
               <td th:text="${company.tel}">電話番号</td>
-              <td th:text="${company.status}">ステータス</td>
+              <td th:text="${company.status.name}">ステータス</td>
             </tr>
           </tbody>
         </table>
@@ -223,6 +228,7 @@
         document.addEventListener('DOMContentLoaded', function () {
           let companyForm = ''
           let originalData = ''
+          let editFlg = false
 
           var companies =
             /*[[${companies}]]*/
@@ -235,7 +241,7 @@
               .querySelector('#add-modal-button')
               .addEventListener('click', function () {
                 let classList = document
-                  .getElementById('status')
+                  .getElementById('statusCode')
                   .closest('div').classList
                 classList.add('d-none')
 
@@ -248,8 +254,9 @@
                 document.getElementById('address1').value = ''
                 document.getElementById('address2').value = ''
                 document.getElementById('tel').value = ''
-                document.getElementById('status').value = ''
+                document.getElementById('statusCode').value = ''
                 document.getElementById('id').value = ''
+                editFlg = false
               })
 
           document.querySelectorAll('.edit-link').forEach(function (link) {
@@ -261,7 +268,7 @@
               document.getElementById('companyModalLabel').textContent =
                 '会社情報編集'
               let classList = document
-                .getElementById('status')
+                .getElementById('statusCode')
                 .closest('div').classList
               classList.remove('d-none')
 
@@ -275,7 +282,7 @@
               document.getElementById('address1').value = company.address1
               document.getElementById('address2').value = company.address2
               document.getElementById('tel').value = company.tel
-              document.getElementById('status').value = company.status
+              document.getElementById('statusCode').value = company.status.code
 
               let form = document.getElementById('company-form')
               form.action = '/admin/companies/edit'
@@ -283,6 +290,7 @@
               document.querySelector('#company-form-submit').disabled = true
               companyForm = document.getElementById('company-form')
               originalData = new FormData(companyForm)
+              editFlg = true
 
               // Open the modal
               var modal = new bootstrap.Modal(
@@ -294,6 +302,9 @@
 
           let form = document.getElementById('company-form')
           form.addEventListener('input', function () {
+            if (!editFlg) {
+              return
+            }
             form = document.getElementById('company-form')
             let currentData = new FormData(form)
             let hasChanged = false

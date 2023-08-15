@@ -14,6 +14,7 @@ import jp.co.fullhouse.lespos.lesposapplication.model.dto.CompanyDto;
 import jp.co.fullhouse.lespos.lesposapplication.model.form.CompanyForm;
 import jp.co.fullhouse.lespos.lesposapplication.model.form.CompanySearchForm;
 import jp.co.fullhouse.lespos.lesposapplication.model.service.CompaniesService;
+import jp.co.fullhouse.lespos.lesposapplication.utils.constant.CompanyStatus;
 import lombok.AllArgsConstructor;
 
 @Controller
@@ -59,6 +60,8 @@ public class AdminController {
    */
   @PostMapping("/companies/add")
   public String addCompany(@ModelAttribute CompanyForm companyForm, RedirectAttributes redirectAttributes) {
+    CompanyStatus statusEnum = CompanyStatus.fromCode(1);
+    companyForm.setStatus(statusEnum);
     companiesService.createCompany(companyForm);
     redirectAttributes.addFlashAttribute("message", "会社登録が完了しました。");
     return "redirect:/admin/companies";
@@ -73,6 +76,8 @@ public class AdminController {
    */
   @PostMapping("/companies/edit")
   public String editCompany(@ModelAttribute CompanyForm companyForm, RedirectAttributes redirectAttributes) {
+    CompanyStatus statusEnum = CompanyStatus.fromCode(companyForm.getStatusCode());
+    companyForm.setStatus(statusEnum);
     companiesService.updateCompany(companyForm);
     redirectAttributes.addFlashAttribute("message", "会社登録が完了しました。");
     return "redirect:/admin/companies";

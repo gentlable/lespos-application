@@ -1,5 +1,6 @@
 package jp.co.fullhouse.lespos.lesposapplication.model.dto;
 
+import jp.co.fullhouse.lespos.lesposapplication.utils.constant.CompanyStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +23,6 @@ public class CompanyDto {
 
   private String tel;
 
-  private int status;
+  private CompanyStatus status;
 
 }
