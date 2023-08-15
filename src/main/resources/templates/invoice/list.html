@@ -77,6 +77,17 @@
                         </td>
                       </tr>
                       <tr>
+                        <td>適格事業者登録番号</td>
+                        <td>
+                          <input
+                            class="form-control"
+                            id="invoice_registration_number"
+                            type="text"
+                            th:field="*{invoiceRegistrationNumber}"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
                         <td>請求金額</td>
                         <td>
                           <input
@@ -168,12 +179,13 @@
                       <tr>
                         <td>銀行コード</td>
                         <td>
-                          <input
+                          <select
                             class="form-control"
-                            type="text"
                             id="bank_code"
                             th:field="*{bankCode}"
-                          />
+                          >
+                            <option value="">選択してください</option>
+                          </select>
                         </td>
                       </tr>
                       <tr>
@@ -190,12 +202,13 @@
                       <tr>
                         <td>支店コード</td>
                         <td>
-                          <input
+                          <select
                             class="form-control"
-                            type="text"
                             id="branch_code"
                             th:field="*{branchCode}"
-                          />
+                          >
+                            <option value="">選択してください</option>
+                          </select>
                         </td>
                       </tr>
                       <tr>
@@ -276,7 +289,7 @@
         .sidebar {
           position: absolute;
           z-index: 1;
-          width: 40vw; /* sidebar の幅を 40vw に設定 */
+          width: 40vw;
           transition: all 0.5s 0s ease;
           background-color: white;
           height: 100%;
@@ -294,16 +307,43 @@
 
       <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', function () {
+          // 選択行保持変数
           let selectedRow = null
 
+          // 金融機関情報取得API APIキー格納変数
+          const headers = {
+            apikey: 'MwM1S003c4G5HylAP8hBFzeg6aGFSGe8iBX9yBV', // 実際のAPIキーに置き換える
+          }
+
+          // 請求書レコード情報格納変数
           let invoices =
             /*[[${invoices}]]*/
 
+            /* 詳細ボタンクリック時の処理
+             * サイドバーを表示させ、サイドバーの情報を選択されたレコードの情報で埋める
+             */
             document.querySelectorAll('.edit-link').forEach(function (link) {
               link.addEventListener('click', function () {
                 let row = this.closest('tr')
                 let rowIndex = Array.from(row.parentNode.children).indexOf(row)
                 let invoice = invoices[rowIndex]
+
+                let branchDataArray = []
+
+                // fetchBankInfo関数を呼び出す
+                fetchBranchInfo(branchDataArray, invoice.bankCode, null).then(
+                  (branchDataArray) => {
+                    const selectElement = document.getElementById('branch_code')
+
+                    // 取得した銀行コードをセレクトリストに追加
+                    branchDataArray.forEach((branch) => {
+                      const optionElement = document.createElement('option')
+                      optionElement.value = branch.code
+                      optionElement.textContent = `(${branch.code}) ${branch.name}`
+                      selectElement.appendChild(optionElement)
+                    })
+                  }
+                )
 
                 if (selectedRow !== rowIndex) {
                   document.getElementById('id').value = invoice.id
@@ -313,6 +353,8 @@
                   document.getElementById('status').value = invoice.status
                   document.getElementById('client_name').value =
                     invoice.clientName
+                  document.getElementById('invoice_registration_number').value =
+                    invoice.invoiceRegistrationNumber
                   document.getElementById('invoiced_amount').value =
                     invoice.invoicedAmount
                   document.getElementById('consumption_tax_rate').value =
@@ -371,11 +413,131 @@
                 }
               })
             })
+
+          // サイドバー閉じる処理
           document
             .querySelector('.close-link')
             .addEventListener('click', function () {
               const left1 = document.querySelector('.sidebar')
               left1.style.left = '-0px'
+            })
+
+          /**
+           * APIから銀行データを非同期で取得する関数
+           * @param {Array} bankDataArray
+           * @param {String} cursor
+           */
+          async function fetchBankInfo(bankDataArray, cursor) {
+            // カーソルが指定されていれば、URLに追加
+            const url = cursor
+              ? `https://apis.bankcode-jp.com/v2/banks?cursor=${cursor}&limit=2000`
+              : 'https://apis.bankcode-jp.com/v2/banks?limit=2000'
+
+            const response = await fetch(url, {
+              headers: headers,
+            })
+            const data = await response.json()
+            bankDataArray = bankDataArray.concat(data.data) // データを配列に追加
+
+            // 次のカーソルが存在する場合、再帰的に関数を呼び出す
+            if (data.hasNext) {
+              await fetchBankInfo(data.nextCursor)
+            }
+            return bankDataArray
+          }
+
+          /**
+           * APIから支店データを非同期で取得する関数
+           * @param {Array} branchDataArray
+           * @param {String} bankCode
+           * @param {String} cursor
+           * @returns {Array} branchDataArray
+           */
+          async function fetchBranchInfo(branchDataArray, bankCode, cursor) {
+            // カーソルが指定されていれば、URLに追加
+            const url = cursor
+              ? `https://apis.bankcode-jp.com/v2/banks/${bankCode}/branches?cursor=${cursor}&limit=2000`
+              : `https://apis.bankcode-jp.com/v2/banks/${bankCode}/branches?limit=2000`
+
+            const response = await fetch(url, {
+              headers: headers,
+            })
+            const data = await response.json()
+            branchDataArray = branchDataArray.concat(data.data) // データを配列に追加
+
+            // 次のカーソルが存在する場合、再帰的に関数を呼び出す
+            if (data.hasNext) {
+              await fetchBranchInfo(branchCode, cursor)
+            }
+
+            return branchDataArray
+          }
+
+          // 銀行データ配列格納変数
+          let bankDataArray = []
+
+          // fetchBankInfo関数を呼び出して、画面に銀行情報を保持
+          fetchBankInfo(bankDataArray, null).then((bankDataArray) => {
+            const selectElement = document.getElementById('bank_code')
+
+            // 既存の<option>タグをクリア
+            selectElement.innerHTML = ''
+
+            // 取得した銀行コードをセレクトリストに追加
+            bankDataArray.forEach((bank) => {
+              const optionElement = document.createElement('option')
+              optionElement.value = bank.code
+              optionElement.textContent = `(${bank.code}) ${bank.name}`
+              selectElement.appendChild(optionElement)
+            })
+          })
+
+          // 銀行コードのセレクトリストの値が変更されたら、銀行名をセットする
+          document
+            .getElementById('bank_code')
+            .addEventListener('change', function () {
+              const bankNameArray = Array.from(this.options).map((option) => {
+                // 正規表現を使用して支店名を抽出
+                const match = option.textContent.match(/\(\d{4}\) (.+)/)
+                return { code: option.value, name: match ? match[1] : '' }
+              })
+
+              bankNameArray.filter((bank) => {
+                if (bank.code === this.value) {
+                  document.getElementById('bank_name').value = bank.name
+                }
+              })
+
+              let branchDataArray = []
+
+              // fetchBankInfo関数を呼び出して、その結果をログとして表示
+              fetchBranchInfo(branchDataArray, this.value, null).then(() => {
+                const selectElement = document.getElementById('branch_code')
+
+                // 取得した銀行コードをセレクトリストに追加
+                branchDataArray.forEach((branch) => {
+                  const optionElement = document.createElement('option')
+                  optionElement.value = branch.code
+                  optionElement.textContent = `(${branch.code}) ${branch.name}`
+                  selectElement.appendChild(optionElement)
+                })
+              })
+            })
+
+          // 支店コードのセレクトリストの値が変更されたら、支店名をセットする
+          document
+            .getElementById('branch_code')
+            .addEventListener('change', function () {
+              const branchNameArray = Array.from(this.options).map((option) => {
+                // 正規表現を使用して支店名を抽出
+                const match = option.textContent.match(/\(\d{3}\) (.+)/)
+                return { code: option.value, name: match ? match[1] : '' }
+              })
+              branchNameArray.filter((branch) => {
+                if (branch.code === this.value) {
+                  document.getElementById('branch_name').value = branch.name
+                }
+              })
             })
         })
       </script>

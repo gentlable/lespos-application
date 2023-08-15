@@ -22,7 +22,6 @@ import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
 import jp.co.fullhouse.lespos.lesposapplication.model.dto.InvoiceDto;
 import jp.co.fullhouse.lespos.lesposapplication.model.entity.Image;
-import jp.co.fullhouse.lespos.lesposapplication.model.entity.Invoice;
 import jp.co.fullhouse.lespos.lesposapplication.model.form.FileUploadForm;
 import jp.co.fullhouse.lespos.lesposapplication.model.form.InvoiceForm;
 import jp.co.fullhouse.lespos.lesposapplication.model.service.GmailSender;
@@ -159,7 +158,7 @@ public class LesposController {
     Image image = imagesService.createImage(fileUploadForm);
     fileUploadForm.setId(image.getId());
     // invoicesテーブルに請求書情報を登録する
-    Invoice invoice = invoicesService.createInvoice(fileUploadForm);
+    invoicesService.createInvoice(fileUploadForm);
 
     model.addAttribute("fileUploadForm", new FileUploadForm());
     model.addAttribute("message", "アップロードが完了しました。");
@@ -181,8 +180,30 @@ public class LesposController {
   }
 
   /**
-   * 請求書情報の登録をする
+   * 未データ化請求書情報一覧画面へ遷移する
+   * 
+   * @param model
+   * @return
    */
+  @GetMapping("/invoice/list/undata")
+  public String invoiceListUndata(Model model, @ModelAttribute("invoiceForm") InvoiceForm invoiceForm) {
+    List<InvoiceDto> invoices = invoicesService.getInvoices();
+    for (InvoiceDto invoiceDto : invoices) {
+      invoiceDto.setBase64Image(s3Service.fileDownload(invoiceDto.getImage().getFilePath()));
+    }
+
+    model.addAttribute("invoices", invoices);
+    return "invoice/list";
+  }
+
+  /**
+   * 請求書情報を更新する
+   * 
+   * @param invoiceForm
+   * @param redirectAttributes
+   * @return
+   */
+
   @PostMapping("/invoice/edit")
   public String invoiceInput(@ModelAttribute InvoiceForm invoiceForm, RedirectAttributes redirectAttributes) {
     invoicesService.updateInvoice(invoiceForm);
