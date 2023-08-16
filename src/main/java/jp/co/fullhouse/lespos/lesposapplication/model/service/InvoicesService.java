@@ -60,11 +60,12 @@ public class InvoicesService {
    * 請求書情報を取得する。
    * 
    */
-  public Invoice getInvoice(String id) {
+  public InvoiceDto fetchInvoiceById(String id) {
 
     Invoice invoice = invoiceRepository.findById(id).orElse(null);
-
-    return invoice;
+    InvoiceDto invoiceDto = new InvoiceDto();
+    BeanUtils.copyProperties(invoice, invoiceDto);
+    return invoiceDto;
   }
 
   /**

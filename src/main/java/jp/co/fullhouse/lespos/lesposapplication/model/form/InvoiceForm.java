@@ -1,5 +1,7 @@
 package jp.co.fullhouse.lespos.lesposapplication.model.form;
 
+import java.time.LocalDate;
+
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +29,7 @@ public class InvoiceForm {
   @NotBlank
   private Integer includingTaxAmount;
   @NotBlank
-  private String paymentDueDate;
+  private LocalDate paymentDueDate;
   @NotBlank
   private Integer paymentMethod;
   @NotBlank

@@ -2,6 +2,7 @@
 package jp.co.fullhouse.lespos.lesposapplication.model.entity;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -60,7 +61,7 @@ public class Invoice {
   private Integer includingTaxAmount;
 
   @Column(name = "payment_due_date")
-  private Timestamp paymentDueDate;
+  private LocalDate paymentDueDate;
 
   @Column(name = "payment_method")
   private Integer paymentMethod;
