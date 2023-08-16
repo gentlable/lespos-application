@@ -26,7 +26,7 @@ public enum CompanyStatus {
     return name;
   }
 
-  public static CompanyStatus fromCode(int code) {
+  public static CompanyStatus getCompanyStatusByCode(int code) {
     for (CompanyStatus status : values()) {
       if (status.getCode() == code) {
         return status;

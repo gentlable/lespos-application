@@ -26,7 +26,7 @@
             <tbody class="">
               <tr th:each="invoice : ${invoices}">
                 <td><a href="javascript:void(0)" class="edit-link">詳細</a></td>
-                <td th:text="${invoice.status}">ステータス</td>
+                <td th:text="${invoice.status.name}">ステータス</td>
                 <td class="one wide" th:text="${invoice.clientName}">
                   取引先・支払い期日 / 請求金額
                 </td>
@@ -323,7 +323,7 @@
              * サイドバーを表示させ、サイドバーの情報を選択されたレコードの情報で埋める
              */
             document.querySelectorAll('.edit-link').forEach(function (link) {
-              link.addEventListener('click', function () {
+              link.addEventListener('click', async function () {
                 let row = this.closest('tr')
                 let rowIndex = Array.from(row.parentNode.children).indexOf(row)
                 let invoice = invoices[rowIndex]
@@ -331,26 +331,28 @@
                 let branchDataArray = []
 
                 // fetchBankInfo関数を呼び出す
-                fetchBranchInfo(branchDataArray, invoice.bankCode, null).then(
-                  (branchDataArray) => {
-                    const selectElement = document.getElementById('branch_code')
+                await fetchBranchInfo(
+                  branchDataArray,
+                  invoice.bankCode,
+                  null
+                ).then((branchDataArray) => {
+                  const selectElement = document.getElementById('branch_code')
 
-                    // 取得した銀行コードをセレクトリストに追加
-                    branchDataArray.forEach((branch) => {
-                      const optionElement = document.createElement('option')
-                      optionElement.value = branch.code
-                      optionElement.textContent = `(${branch.code}) ${branch.name}`
-                      selectElement.appendChild(optionElement)
-                    })
-                  }
-                )
+                  // 取得した銀行コードをセレクトリストに追加
+                  branchDataArray.forEach((branch) => {
+                    const optionElement = document.createElement('option')
+                    optionElement.value = branch.code
+                    optionElement.textContent = `(${branch.code}) ${branch.name}`
+                    selectElement.appendChild(optionElement)
+                  })
+                })
 
                 if (selectedRow !== rowIndex) {
                   document.getElementById('id').value = invoice.id
                   document.getElementById('company_id').value =
                     invoice.companyId
                   document.getElementById('image_id').value = invoice.imageId
-                  document.getElementById('status').value = invoice.status
+                  document.getElementById('status').value = invoice.status.code
                   document.getElementById('client_name').value =
                     invoice.clientName
                   document.getElementById('invoice_registration_number').value =
@@ -451,7 +453,7 @@
            * @param {Array} branchDataArray
            * @param {String} bankCode
            * @param {String} cursor
-           * @returns {Array} branchDataArray
+           * @returns {Array}
            */
           async function fetchBranchInfo(branchDataArray, bankCode, cursor) {
             // カーソルが指定されていれば、URLに追加
@@ -510,18 +512,27 @@
 
               let branchDataArray = []
 
-              // fetchBankInfo関数を呼び出して、その結果をログとして表示
-              fetchBranchInfo(branchDataArray, this.value, null).then(() => {
-                const selectElement = document.getElementById('branch_code')
+              // fetchBranchInfo関数を呼び出して、その結果をログとして表示
+              fetchBranchInfo(branchDataArray, this.value, null).then(
+                (branchDataArray) => {
+                  const selectElement = document.getElementById('branch_code')
 
-                // 取得した銀行コードをセレクトリストに追加
-                branchDataArray.forEach((branch) => {
-                  const optionElement = document.createElement('option')
-                  optionElement.value = branch.code
-                  optionElement.textContent = `(${branch.code}) ${branch.name}`
-                  selectElement.appendChild(optionElement)
-                })
-              })
+                  // 既存の<option>タグをクリア
+                  selectElement.innerHTML = ''
+                  let initOptionElement = document.createElement('option')
+                  initOptionElement.textContent = '選択してください'
+                  selectElement.appendChild(initOptionElement)
+                  document.getElementById('branch_name').value = ''
+
+                  // 取得した銀行コードをセレクトリストに追加
+                  branchDataArray.forEach((branch) => {
+                    const optionElement = document.createElement('option')
+                    optionElement.value = branch.code
+                    optionElement.textContent = `(${branch.code}) ${branch.name}`
+                    selectElement.appendChild(optionElement)
+                  })
+                }
+              )
             })
 
           // 支店コードのセレクトリストの値が変更されたら、支店名をセットする

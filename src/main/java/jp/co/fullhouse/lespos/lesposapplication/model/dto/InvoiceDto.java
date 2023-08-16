@@ -2,6 +2,8 @@
 package jp.co.fullhouse.lespos.lesposapplication.model.dto;
 
 import java.sql.Timestamp;
+
+import jp.co.fullhouse.lespos.lesposapplication.utils.constant.InvoiceStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +13,7 @@ public class InvoiceDto {
 
   private String id;
   private String companyId;
-  private Integer status;
+  private InvoiceStatus status;
   private Integer submitMethod;
   private String clientName;
   private String invoiceRegistrationNumber;

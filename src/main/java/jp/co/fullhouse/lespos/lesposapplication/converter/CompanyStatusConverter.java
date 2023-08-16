@@ -20,6 +20,6 @@ public class CompanyStatusConverter implements AttributeConverter<CompanyStatus,
     if (code == null) {
       return null;
     }
-    return CompanyStatus.fromCode(code);
+    return CompanyStatus.getCompanyStatusByCode(code);
   }
 }

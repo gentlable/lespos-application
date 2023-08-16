@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -12,6 +13,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jp.co.fullhouse.lespos.lesposapplication.converter.InvoiceStatusConverter;
+import jp.co.fullhouse.lespos.lesposapplication.utils.constant.InvoiceStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,7 +32,8 @@ public class Invoice {
   private String companyId;
 
   @Column(nullable = false)
-  private Integer status;
+  @Convert(converter = InvoiceStatusConverter.class)
+  private InvoiceStatus status;
 
   @Column(name = "submit_method")
   private Integer submitMethod;

@@ -14,6 +14,7 @@ import jp.co.fullhouse.lespos.lesposapplication.model.entity.Invoice;
 import jp.co.fullhouse.lespos.lesposapplication.model.form.FileUploadForm;
 import jp.co.fullhouse.lespos.lesposapplication.model.form.InvoiceForm;
 import jp.co.fullhouse.lespos.lesposapplication.model.repository.InvoicesRepository;
+import jp.co.fullhouse.lespos.lesposapplication.utils.constant.InvoiceStatus;
 
 @Service
 public class InvoicesService {
@@ -30,7 +31,8 @@ public class InvoicesService {
     Invoice invoice = new Invoice();
     invoice.setImageId(form.getId());
     invoice.setCompanyId("a56c611b-374e-11ee-b30d-0242ac170002");
-    invoice.setStatus(0);
+    InvoiceStatus statusEnum = InvoiceStatus.getInvoiceStatusByCode(1);
+    invoice.setStatus(statusEnum);
 
     invoice = invoiceRepository.save(invoice);
 
@@ -46,6 +48,8 @@ public class InvoicesService {
     Invoice invoice = new Invoice();
     BeanUtils.copyProperties(invoiceForm, invoice);
     invoice.setCompanyId("a56c611b-374e-11ee-b30d-0242ac170002");
+    InvoiceStatus statusEnum = InvoiceStatus.getInvoiceStatusByCode(invoiceForm.getStatus());
+    invoice.setStatus(statusEnum);
 
     invoice = invoiceRepository.save(invoice);
 

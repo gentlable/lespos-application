@@ -60,7 +60,7 @@ public class AdminController {
    */
   @PostMapping("/companies/add")
   public String addCompany(@ModelAttribute CompanyForm companyForm, RedirectAttributes redirectAttributes) {
-    CompanyStatus statusEnum = CompanyStatus.fromCode(1);
+    CompanyStatus statusEnum = CompanyStatus.getCompanyStatusByCode(1);
     companyForm.setStatus(statusEnum);
     companiesService.createCompany(companyForm);
     redirectAttributes.addFlashAttribute("message", "会社登録が完了しました。");
@@ -76,7 +76,7 @@ public class AdminController {
    */
   @PostMapping("/companies/edit")
   public String editCompany(@ModelAttribute CompanyForm companyForm, RedirectAttributes redirectAttributes) {
-    CompanyStatus statusEnum = CompanyStatus.fromCode(companyForm.getStatusCode());
+    CompanyStatus statusEnum = CompanyStatus.getCompanyStatusByCode(companyForm.getStatusCode());
     companyForm.setStatus(statusEnum);
     companiesService.updateCompany(companyForm);
     redirectAttributes.addFlashAttribute("message", "会社登録が完了しました。");
